@@ -1,0 +1,29 @@
+/*
+* $Id: anatscale.hoc,v 1.2 2005/09/10 23:02:15 ted Exp $
+* set up xyz scale bars
+* 2018/05/20 Modified by Aman Aberra
+*/
+
+create xScale, yScale, zScale
+proc anatscale() {
+	create xScale, yScale, zScale
+	if ($4>0) {  // if length arg is <= 0 then do nothing
+		xScale {
+			pt3dclear()
+			pt3dadd($1, $2, $3, 1)
+			pt3dadd($1+$4, $2, $3, 1)
+		}
+		yScale {
+			pt3dclear()
+			pt3dadd($1, $2, $3, 1)
+			pt3dadd($1, $2+$4, $3, 1)
+		}
+		zScale {
+			pt3dclear()
+			pt3dadd($1, $2, $3, 1)
+			pt3dadd($1, $2, $3+$4, 1)
+		}
+	}
+}
+
+//anatscale(400,0,0,250)  // origin xyz and length

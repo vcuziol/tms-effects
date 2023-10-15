@@ -1,0 +1,53 @@
+// derivative of current in a RLC circuit (over- and underdamped cases).
+// adapted from "Mechanisms of Magnetic Stimulation of Central Nervous System Neurons", Pashut et al., 2011; ModelDB accession number: 138321
+
+objref stim_amp, stim_time, testg
+stim_amp = new Vector()
+stim_time = new Vector()
+
+
+proc stim_waveform(){ local i,j,pstart,pstop,pdur,amp,dur,scale1,W1,W2,exp1,exp2,exp3,Sin1,Cos1,LC,RC,CC
+
+  stim_amp.resize(tstop/dt+1)
+  stim_amp.fill(0)
+
+  stim_time.resize(tstop/dt+1)
+  stim_time.fill(0)
+
+  pstart=int($1/dt)
+  pstop=int(($1+$2)/dt)
+
+  pdur=int($2/dt)
+  dur=$2
+  amp=$3
+
+  CC=$4*1e-6 // convert to Farad
+  RC=$5	//Ohm
+  LC=$6*1e-6 // convert to Henry
+
+  for i=0,int(tstop/dt){
+	stim_time.x[i]=i*dt
+	if(i>pstart && i<pstop) {
+	
+		if((RC/(2*LC))^2>1/(LC*CC)){
+			//Overdamped
+			W1=RC/(2*LC) //1/sec
+  			W2=sqrt((W1*W1)-(1/(LC*CC))) //1/sec
+  			scale1=amp*CC*W2*((W1/W2)^2-1)/2    // [Ampere]
+			exp1=exp(-W1*(stim_time.x[i]-$1)/1000)	// divide by 1000 to keep units in exp in sec
+			exp2=exp( W2*(stim_time.x[i]-$1)/1000)
+			exp3=exp(-W2*(stim_time.x[i]-$1)/1000)
+			stim_amp.x[i]=(scale1*exp1*((W2-W1)*exp2+(W2+W1)*exp3))/1000  // dI/dt  in [A/millisec]		
+		} else {
+		//Underdamped
+			W1=RC/(2*LC) //1/sec
+  			W2=sqrt(1/(LC*CC)-W1^2) //1/sec
+  			scale1=amp*CC*W2*((W1/W2)^2-1)/2    // [Ampere]
+			exp1=exp(-W1*(stim_time.x[i]-$1)/1000)	// divide by 1000 to keep units in exp in sec
+			Sin1=sin(W2*(stim_time.x[i]-$1)/1000)
+			Cos1=cos(W2*(stim_time.x[i]-$1)/1000)		
+			stim_amp.x[i]=(scale1*exp1*(W2*Cos1-W1*Sin1))/1000  	// dI/dt  in [A/millisec]		
+		}
+	}
+  }
+}

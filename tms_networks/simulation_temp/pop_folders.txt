@@ -1,0 +1,10 @@
+(dp0
+S'pop_L23'
+p1
+S'/home/master/Desktop/new_TMSEffects/tms_networks/results/master-Aspire-GX-783_0x7f3f52738870_20200528171138'
+p2
+sS'pop_L5'
+p3
+S'/home/master/Desktop/new_TMSEffects/tms_networks/results/master-Aspire-GX-783_0x7f3f527cff00_20200528171339'
+p4
+s.

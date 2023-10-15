@@ -1,0 +1,10 @@
+{
+  "level_of_detail": "exp2syn",
+  "tau1": 45.2,
+  "tau2": 175.16,
+  "gpeak": 0.05,
+  "erev": -70.0,
+  "tau_D1": 200,
+  "d1": 0.5
+}
+

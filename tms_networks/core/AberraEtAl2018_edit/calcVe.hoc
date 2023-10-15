@@ -1,0 +1,110 @@
+/*
+* Calculates extracellular potentials (Ve) for either uniform E-field stimulation or
+* intracortical microstimulation (ICMS)
+* AUTHOR: Aman Aberra, Duke University
+* CONTACT: aman.aberra@duke.edu
+*/
+stim_mode = 1 // 1 - ICMS, 2 - uniform E-field 
+xe = 200 // µm electrode default position
+ye = -50 // µm
+ze = 0  // µm 
+sigma_e = 2.76e-7 // S/µm - conductivity in GM (Bungert 2016)
+create sElec
+// uniform E field stimulation
+theta = 180 // deg - polar angle
+phi = 0 // deg - azimuthal angle 
+
+objref shplot, pElec,sElec_list // for shape plot
+proc getes() {
+	if (stim_mode == 1) { // intracortical microstimulation
+        // Calculate potentials at each compartmentf or current point-source, amp = 1 µA
+        // use current point source at xe, ye, ze				
+		calcesI(xe,ye,ze,sigma_e)	
+        // Draw red dot for electrode location
+		create sElec							
+		sElec {
+			// make it 1 um long
+			pt3dclear()
+			pt3dadd(xe-5, ye, ze, 1)
+			pt3dadd(xe+5, ye, ze, 1)
+		}	   
+        objref pElec
+        sElec pElec = new PointProcessMark(0.5) // middle of sElec        
+        color_plotmax()
+        shplot.point_mark(pElec,2,"O",5) // mark electrode point         		
+        shplot.label(600,100,"Electrode position",1,1,0,0,2)
+		printf("Calculated potentials for current point-source at (%.1f,%.1f,%.1f) um\n",xe,ye,ze)
+	} else if (stim_mode == 2) { // uniform E stimulation		
+		// Calculate potentials for uniform E-field in NEURON 
+		calcesE(theta,phi)
+        // remove ICMS point 
+        shplot.point_mark_remove(pElec)
+        // Draw violet line for E-field vector
+        create sElec						
+		sElec {
+			// make a 800 um long line to represent to E-field vector
+            len = 800
+			pt3dclear()
+			pt3dadd(0, 0, 0, 1)
+			pt3dadd(len*sin(theta*PI/180)*cos(phi*PI/180), len*cos(theta*PI/180), -len*sin(theta*PI/180)*sin(phi*PI/180), 1)
+		}	        
+        objref sElec_list
+        sElec_list = new SectionList()
+        sElec sElec_list.append()        
+        color_plotmax()    
+        shplot.color_list(sElec_list,7)  
+        shplot.label(600,100,"E-field vector",1,1,0,0,7)  
+		printf("Calculated potentials for theta = %g deg, phi = %g deg\n",theta,phi)		
+	} 	
+}
+
+// input theta, and phi angles of E-field, assigns Ve to all compartments (es_xtra(x)) for unit E-field (V/m)
+proc calcesE() { local theta,phi
+	theta = $1
+	phi = $2
+	theta = theta*PI/180
+	phi = phi*PI/180
+	Ex = sin(theta)*cos(phi)
+	Ey = sin(theta)*sin(phi)
+	Ez = cos(theta)
+	forsec cell.all {
+		if (ismembrane("xtra")) {
+			for(x,0){
+                // Ve in [mV] for E of 1 [V/m] <= µm*1e-3 = mm * 1mV/mm = mV
+				// es_xtra(x) = -(Ex*x_xtra(x) + Ey*y_xtra(x) + Ez*z_xtra(x))*1e-3 
+                es_xtra(x) = -(Ex*x_xtra(x) + Ey*(-z_xtra(x)) + Ez*y_xtra(x))*1e-3 
+			}
+		}
+	}
+}
+// input electrode position, x0,y0,z0 and conductivity, sigma_e, assigns Ve to all compartments (es_xtra(x)) for unit current (µA)
+proc calcesI(){ local x0,y0,z0,sigma_e,r
+	x0 = $1 // electrode position in um
+	y0 = $2
+	z0 = $3
+    sigma_e = $4 // S/µm
+	forsec cell.all {
+		if (ismembrane("xtra")){
+			for(x,0){
+				r = sqrt((x_xtra(x)-x0)^2 + (y_xtra(x)-y0)^2+(z_xtra(x)-z0)^2) // distance from compartment to electrode (µm)
+                // Ve in [mV] for I of 1 [µA] <= µA*1e-3 = mA * 1/(S*µm^-1 * µm) = mV
+				es_xtra(x) = 1e-3/(4*PI*sigma_e*r) 
+			}
+		}
+	}		
+}
+
+/*
+xpanel("Spatial parameters for extracellular stimulation", 0)    
+    xradiobutton("ICMS","stim_mode=1",1)
+    xradiobutton("uniform E-field","stim_mode=2")    
+    xlabel("Settings for uniform E-field stimulation")
+    xvalue("Theta (deg)","theta",180,"getes()",0,1)
+    xvalue("Phi (deg)","phi",0,"getes()",0,1)
+    xlabel("Settings for ICMS")
+    xvalue("x (um)","xe",200,"getes()",0,1)
+    xvalue("y (um)","ye",-50,"getes()",0,1)
+    xvalue("z (um)","ze",0,"getes()",0,1)
+    xvalue("sigma_e (S/um)","sigma_e",2.76e-7,"getes()",0,1)
+xpanel(266,500)
+*/

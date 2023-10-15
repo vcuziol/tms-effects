@@ -1,0 +1,327 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=utf-8">
+<meta name=Generator content="Microsoft Word 15 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+	{mso-style-link:"Header Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+	{mso-style-link:"Footer Char";
+	margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Calibri",sans-serif;}
+span.HeaderChar
+	{mso-style-name:"Header Char";
+	mso-style-link:Header;}
+span.FooterChar
+	{mso-style-name:"Footer Char";
+	mso-style-link:Footer;}
+.MsoChpDefault
+	{font-family:"Calibri",sans-serif;}
+ /* Page Definitions */
+ @page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US>
+
+<div class=WordSection1>
+
+<p class=MsoNormal>This archive instantiates the single-cell cortical models
+used in (Aberra et al. 2018) and sets up extracellular stimulation with either
+a point-current source, to simulate intracortical microstimulation (ICMS), or a
+uniform E-field distribution, with a monophasic, rectangular pulse waveform in
+both cases.  </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Model code used in:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Aberra AS, Peterchev, AV, Grill WM (2018) Biophysically
+Realistic Neuron Models for Simulation of Cortical Stimulation J Neural Eng. 
+https://doi.org/10.1088/1741-2552/aadbb1
+</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>This code was contributed by Aman Aberra (Duke University)</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>ABSTRACT</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Objective. We implemented computational models of human and
+rat cortical neurons for simulating the neural response to cortical stimulation
+with electromagnetic fields. Approach. We adapted model neurons from the
+library of Blue Brain models to reflect biophysical and geometric properties of
+both adult rat and human cortical neurons and coupled the model neurons to
+exogenous electric fields (E-fields). The models included 3D reconstructed
+axonal and dendritic arbors, experimentally-validated electrophysiological
+behaviors, and multiple, morphological variants within cell-types. Using these
+models, we characterized the single-cell responses to intracortical
+microstimulation (ICMS) and uniform E-field with dc as well as pulsed currents.
+Main results. The strength–duration and current–distance characteristics of the
+model neurons to ICMS agreed with published experimental results, as did the
+subthreshold polarization of cell bodies and axon terminals by uniform dc
+E-fields. For all forms of stimulation, the lowest threshold elements were
+terminals of the axon collaterals, and the dependence of threshold and
+polarization on spatial and temporal stimulation parameters was strongly
+affected by morphological features of the axonal arbor, including myelination,
+diameter, and branching. Significance. These results provide key insights into
+the mechanisms of cortical stimulation. The presented models can be used to
+study various cortical stimulation modalities while incorporating detailed
+spatial and temporal features of the applied E-field. </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Instructions to run the code (assuming NEURON has been
+installed): </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>**Linux/macOS (in terminal):</p>
+
+<p class=MsoNormal>            unzip the archive</p>
+
+<p class=MsoNormal>            cd AberraEtAl2018</p>
+
+<p class=MsoNormal>            chmod +x mosinit.command (automatically compiles
+mod files in 'mechanisms/' if necessary)</p>
+
+<p class=MsoNormal>            Double-click mosinit.command (or launch from
+terminal, e.g. ./mosinit.command)</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>**Windows:</p>
+
+<p class=MsoNormal>            unzip the archive</p>
+
+<p class=MsoNormal>            compile ‘mechanisms/‘ using mknrndll and copy
+nrnmech.dll from 'mechanisms/' up one level to 'AberraEtAl2018/' </p>
+
+<p class=MsoNormal>            right-click mosinit.ps1 and select “Run with
+Powershell”, will probably require giving permission to run</p>
+
+<p class=MsoNormal>            **To make short-cut executable with
+double-click:</p>
+
+<p class=MsoNormal>                        right-click mosinit.ps1 and select
+“Create shortcut”</p>
+
+<p class=MsoNormal>                        right-click newly created shortcut
+(ends with Shortcut.lnk by default) and select “Properties”</p>
+
+<p class=MsoNormal>                        in the “Target:” field, add the text
+below before the existing text, which should look like this:</p>
+
+<p class=MsoNormal>                                    powershell.exe
+-ExececutionPolicy Bypass -File C:\path\to\file…</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>**instructions for creating executable powershell shortcut
+can be found here:
+https://www.tenforums.com/tutorials/97162-powershell-scripting-run-script-shortcut.html**
+</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Additional notes: </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>1) After loading a model neuron, code currently only allows
+reloading same model (with same or different parameters), attempting to load a
+different model neuron will throw an error</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>2) Stack size must be increased to generate myelinated axons
+for most models, so init.hoc should be launched with options included in mosinit.command:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>            nrngui -NSTACK 100000 -NFRAME 20000 init.hoc </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Using either shortcut launches init.hoc with these settings
+by default, otherwise the above text should be executed from the terminal/shell</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>3) Loading cell runs color_plotmax() with default settings,
+to replot with main axon colored (more well-defined for the pyramidal cells),
+type: </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>oc&gt; color_plotmax(2,0)</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Set second argument to 1 to save figure as .eps </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>4) To add new cells from Blue Brain Library:</p>
+
+<p class=MsoNormal>            Download cell model folder from: https://bbp.epfl.ch/nmc-portal/downloads</p>
+
+<p class=MsoNormal>            Unzip and place directory in
+“AberraEtAl2018/cells”</p>
+
+<p class=MsoNormal>            comment out “replace_axon()” in template.hoc
+within proc biophys() (typically line 117)</p>
+
+<p class=MsoNormal>            Add directory name to list of cell names below
+last entry in cell_chooser.hoc (currently, L6_TPC_L4_cADpyr231_5)</p>
+
+<p class=MsoNormal>            </p>
+
+<p class=MsoNormal>5) After loading, users can apply extracellular stimulation
+for a given field using the GUI windows, <b>screenshots with further instructions
+(run on macOS) shown below</b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>References for Blue Brain models:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>1. Markram H†, Muller E†, Ramaswamy S†, Reimann MW†, 
+Abdellah M, Sanchez CA, Ailamaki A, Alonso-Nanclares L, Antille N, Arsever S et
+al. (2015). Reconstruction and Simulation of Neocortical Microcircuitry. Cell
+163:2, 456 - 492. doi: 10.1016/j.cell.2015.09.029</p>
+
+<p class=MsoNormal>† Co-first author</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>2. Ramaswamy S, Courcol J-D, Abdellah M, Adaszewski SR,
+Antille N, Arsever S, Atenekeng G, Bilgili A, Brukau Y, Chalimourda A, Chindemi
+G, Delalondre F, Dumusc R, Eilemann S, Gevaert ME, Gleeson P, Graham JW,
+Hernando JB, Kanari L, Katkov Y, Keller D, King JG, Ranjan R, Reimann MW,
+Rössert C, Shi Y, Shillcock JC, Telefont M, Van Geit W, Villafranca Diaz J,
+Walker R, Wang Y, Zaninetta SM, DeFelipe J, Hill SL, Muller J, Segev I,
+Schürmann F, Muller EB and Markram H (2015). The neocortical microcircuit
+collaboration portal: a resource for rat somatosensory cortex. Front. Neural
+Circuits 9:44. doi: 10.3389/fncir.2015.00044</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>If mod files are successfully compiled and loaded, launching
+mosinit.command should produce the following output:</p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=450
+height=253 id="Picture 1" src="README.fld/image001.png"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Selecting, for example, <i>cell 20: L5_TTPC2_cADpyr232_5</i>
+in the “Choose Cell” window loads the cell and generates a Shape plot with the
+Myelin, Node, and Unmyelinated axonal sections as well as the apical and basal
+dendrites all colored differently. Color legend can be found in Fig. 1 or Fig.
+7a of (Aberra et al. 2018). </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=450
+height=253 id="Picture 2" src="README.fld/image002.png"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>Next, to simulate ICMS or uniform E-field stimulation, click
+on any of the parameter buttons, or enter a value in a parameter text box, and hit
+“Enter” on the keyboard in both the “Spatial parameters” and “Temporal
+parameters” windows. Once both sets of parameters are initialized, indicated by
+messages confirming the potentials and waveform have been set in the terminal,
+the simulation can be run using the “RunControl” window. Note the red marker
+indicating the location of the electrode tip, i.e. the point-source, used for
+calculating potentials. </p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=450
+height=253 id="Picture 3" src="README.fld/image003.png"></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>For uniform E-field stimulation, a violet “dummy section”
+indicates the E-field direction defined by the polar and azimuthal angles,
+theta and phi, respectively, with the E-field pointing away from the cell body.
+<b>Note: when using uniform E-field stimulation theta and phi are calculated by
+treating the y-axis (upwards, in the page) in the NEURON coordinate system as
+the z-axis, and by treating the NEURON z-axis (positive, out of the page) as
+the negative y-axis (positive, into the page). This is in contrast to the
+coordinates used for the ICMS electrode position, which use the NEURON
+coordinate system, i.e. z-axis is positive pointing out of the page. </b></p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal>To visualize the membrane potential response, a “Voltage
+axis” or “Shape plot” can be generated from the “Graph” menu In the “NEURON
+Main Menu” window (top left). Examples: </p>
+
+<p class=MsoNormal>&nbsp;</p>
+
+<p class=MsoNormal><b>ICMS</b></p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=450
+height=253 id="Picture 5" src="README.fld/image004.png"></p>
+
+<p class=MsoNormal align=center style='text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal><b>&nbsp;</b></p>
+
+<p class=MsoNormal><b>Uniform E-field stimulation</b></p>
+
+<p class=MsoNormal align=center style='text-align:center'>&nbsp;</p>
+
+<p class=MsoNormal align=center style='text-align:center'><img width=450
+height=253 id="Picture 6" src="README.fld/image005.png"></p>
+
+<p class=MsoNormal align=center style='text-align:center'>&nbsp;</p>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+node_type_id ei pop_name model_type model_template morphology
+104 NULL pop_L5 biophysical StimCell.py:L5_simplified_cell /home/master/Desktop/new_TMSEffects/tms_networks/core/L5_simplified_cell/morphology/dend-C060114A7_axon-C060116A3_-_Clone_2.asc
+100 e pop_L23 biophysical StimCell.py:L23_PC_cADpyr229_1 /home/master/Desktop/new_TMSEffects/tms_networks/core/AberraEtAl2018_edit/cells/L23_PC_cADpyr229_1/morphology/dend-C170897A-P3_axon-C260897C-P4_-_Clone_4.asc
+101 e pop_L23_NMDA biophysical StimCell.py:L23_PC_cADpyr229_1 /home/master/Desktop/new_TMSEffects/tms_networks/core/AberraEtAl2018_edit/cells/L23_PC_cADpyr229_1/morphology/dend-C170897A-P3_axon-C260897C-P4_-_Clone_4.asc
+102 i pop_L23_GABAa biophysical StimCell.py:L23_PC_cADpyr229_1 /home/master/Desktop/new_TMSEffects/tms_networks/core/AberraEtAl2018_edit/cells/L23_PC_cADpyr229_1/morphology/dend-C170897A-P3_axon-C260897C-P4_-_Clone_4.asc
+103 i pop_L23_GABAb biophysical StimCell.py:L23_PC_cADpyr229_1 /home/master/Desktop/new_TMSEffects/tms_networks/core/AberraEtAl2018_edit/cells/L23_PC_cADpyr229_1/morphology/dend-C170897A-P3_axon-C260897C-P4_-_Clone_4.asc

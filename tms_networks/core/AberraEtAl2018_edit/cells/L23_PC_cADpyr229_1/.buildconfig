@@ -1,0 +1,10 @@
+[default]
+name=Default
+runtime=host
+config-opts=
+run-opts=
+prefix=/home/master/.cache/gnome-builder/install/L23_PC_cADpyr229_1/host
+app-id=
+postbuild=
+prebuild=
+default=true

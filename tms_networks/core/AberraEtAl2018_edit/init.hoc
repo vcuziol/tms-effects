@@ -1,0 +1,61 @@
+/* 
+* Loads model files and creates GUI panels. Includes procedure for generating shape plots of cells
+* AUTHOR: Aman Aberra, Duke University
+* CONTACT: aman.aberra@duke.edu
+*/
+objref cell
+{load_file("nrngui.hoc")}
+{load_file("interpCoordinates.hoc")}
+{load_file("setPointers.hoc")}
+{load_file("calcVe.hoc")}
+{load_file("stimWaveform.hoc")}
+{load_file("cellChooser.hoc")}
+{load_file("setParams.hoc")}
+{load_file("editMorphology.hoc")} // procs for editing cell morphology
+//{load_file("rig.ses")}
+
+//createPanels() // in setParams.hoc
+
+objref soma_point3
+// color_plotmax(plot_mode,save_fig)
+// plot_mode: 1 colors nodes of Ranvier, Myelin, and Unmyelinated axon separately (default)
+//            2 colors main axon in red, rest of axon black
+// save_fig: 1 saves figure "cell<cell_id>.eps", 0 just plots (default)
+proc color_plotmax() { local plot_mode,save_fig
+	if (numarg() > 0){
+        plot_mode = $1
+    } else {
+        plot_mode = 1 // default mode 1 
+    }   
+    if (numarg() > 1){
+        save_fig = $2
+    } else {
+        save_fig = 0 // default don't save
+    }
+	load_file(0,"anatscale.hoc")
+    anatscale(400,0,0,250)  // origin xyz and length	
+    shplot = new Shape(0)
+	shplot.view(-1568.93, -1200, 2837.86, 1700, 607, 93, 530, 320)
+	shplot.color_list(cell.axonal,1)
+    if (plot_mode == 1) {
+        if (myelinate_ax) {
+            shplot.color_list(iseg_secList,5)
+            shplot.color_list(Node_secList,2)
+            shplot.color_list(Myelin_secList,1)
+            shplot.color_list(Unmyelin_secList,5) 
+        }                      
+    } else if (plot_mode == 2) {
+        shplot.color_list(main_ax_list,2)	 
+    }
+	shplot.color_list(cell.apical,3)
+	shplot.color_list(cell.basal,4)
+	cell.soma soma_point3 = new IClamp(0.5)
+	shplot.point_mark(soma_point3,1,"O",10)	        
+    shplot.exec_menu("View = plot")    
+	if (save_fig) {
+		strdef cellfile
+		sprint(cellfile,"Cell%g.eps",cell_id)		
+		shplot.printfile(cellfile)
+	}		
+}
+

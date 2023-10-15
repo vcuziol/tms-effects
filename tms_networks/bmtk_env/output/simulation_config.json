@@ -1,0 +1,47 @@
+{
+  "node_sets_file": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/node_sets.json", 
+  "run": {
+    "dL": 20.0, 
+    "nsteps_block": 5000, 
+    "spike_threshold": -15.0, 
+    "tstart": 0.0, 
+    "tstop": 20.0, 
+    "dt": 0.025
+  }, 
+  "network": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/circuit_config.json", 
+  "config_path": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/simulation_config.json", 
+  "conditions": {
+    "celsius": 34.0, 
+    "v_init": -80.0
+  }, 
+  "reports": {}, 
+  "components": {
+    "morphologies_dir": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/components/morphologies", 
+    "point_neuron_models_dir": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/components/point_neuron_models", 
+    "templates_dir": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/components/templates", 
+    "biophysical_neuron_models_dir": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/components/biophysical_neuron_models", 
+    "mechanisms_dir": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/components/mechanisms", 
+    "synaptic_models_dir": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/components/synaptic_models"
+  }, 
+  "output": {
+    "spikes_file": "spikes.h5", 
+    "log_file": "log.txt", 
+    "output_dir": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/output"
+  }, 
+  "target_simulator": "NEURON", 
+  "config_dir": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env", 
+  "networks": {
+    "nodes": [
+      {
+        "node_types_file": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/network/mcortex_node_types.csv", 
+        "nodes_file": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/network/mcortex_nodes.h5"
+      }
+    ], 
+    "edges": [
+      {
+        "edges_file": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/network/mcortex_mcortex_edges.h5", 
+        "edge_types_file": "/home/master/Desktop/new_TMSEffects/tms_networks/bmtk_env/network/mcortex_mcortex_edge_types.csv"
+      }
+    ]
+  }
+}

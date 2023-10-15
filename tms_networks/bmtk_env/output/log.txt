@@ -1,0 +1,3 @@
+2020-08-06 02:45:19,509 [INFO] Created log file
+2020-08-06 02:45:19,513 [INFO] Running NEURON with mpi (7 cores).
+2020-08-06 02:45:19,595 [INFO] Building cells.

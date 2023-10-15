@@ -1,0 +1,219 @@
+/* 
+* Procedures for launching desired cell model, scaling diameters/lengths, and adding myelinated axon
+* AUTHOR: Aman Aberra, Duke University
+* CONTACT: aman.aberra@duke.edu
+*/
+
+cell_id = 0 // leave unset until user selects cell
+objref cell_names, nil
+objref main_ax_list, strobj
+objref secnames[numSect]
+min_sec_ind = 0
+
+cell_names = new List()
+strdef tstr1, tstr2, cell_dir, current_dir,createsim_file // read Traub template names into cell_names List 
+current_dir = getcwd()
+for i=1,25 {getstr(tstr1,1) cell_names.append(new String(tstr1))}
+L1_NGC-DA_bNAC219_1
+L1_NGC-DA_bNAC219_2
+L1_NGC-DA_bNAC219_3
+L1_NGC-DA_bNAC219_4
+L1_NGC-DA_bNAC219_5	
+L23_PC_cADpyr229_1
+L23_PC_cADpyr229_2
+L23_PC_cADpyr229_3
+L23_PC_cADpyr229_4
+L23_PC_cADpyr229_5
+L4_LBC_cACint209_1
+L4_LBC_cACint209_2
+L4_LBC_cACint209_3
+L4_LBC_cACint209_4
+L4_LBC_cACint209_5
+L5_TTPC2_cADpyr232_1
+L5_TTPC2_cADpyr232_2
+L5_TTPC2_cADpyr232_3
+L5_TTPC2_cADpyr232_4
+L5_TTPC2_cADpyr232_5
+L6_TPC_L4_cADpyr231_1
+L6_TPC_L4_cADpyr231_2
+L6_TPC_L4_cADpyr231_3
+L6_TPC_L4_cADpyr231_4
+L6_TPC_L4_cADpyr231_5
+
+// cell_chooser(cell_id) 
+proc create_chosen_cell() { local start_ind, synapses_enabled localobj terminal_sec_str
+    cell_id = $1 // reset cell_id to input argument
+    if (cell_id > 0){
+        //forall delete_section()    //v
+        //cell = nil					
+        // Launch cell using create_cell within Blue Brain code    
+        synapses_enabled = 0 // turn off synapses
+        sprint(cell_dir,"cells/%s",cell_names.o(cell_id-1).s)
+        chdir(cell_dir) 				
+        {xopen("createsimulation.hoc")}	// load cell-specific createsimulation.hoc file	//v
+        create_cell(synapses_enabled)	
+        printf("*---------*\nLoaded Blue Brain cell: %s\n",cell_names.o(cell_id-1).s)
+
+        totalnseg = 0
+    	forsec cell.all { totalnseg += nseg }
+        printf("cell total nseg: %g \n", totalnseg) //v
+
+        // insert xtra/extracellular and run setpointers/get secrefs()
+        forsec cell.all { // call setpointers() on original cell to get type_xtra of each original axon section
+            insert xtra
+            insert extracellular
+        }
+    } else {
+        print "Cell model not selected"
+    }     
+}
+objref meth1cells 
+proc modify_cell_geometry() { //local meth1cells
+        // Scale diameters and myelinate axon before setting pointers
+        // Scale compartment diameters		
+       print "starting modify_cell_geometry"
+        if (scale_soma_area != 1) { cell.soma { diam(0.5) = scale_soma_area*area(0.5)/(PI*L) } }
+        if (scale_apic_diam != 1) scale_diam2(scale_apic_diam,cell.apical)
+        if (scale_basal_diam != 1) scale_diam2(scale_basal_diam,cell.basal)		
+        if (scale_basal_L != 1) forsec cell.basal L=L*scale_basal_L
+        if (scale_axon_diam != 1) scale_diam2(scale_axon_diam, cell.axonal)
+        // get coordinates and secrefs list        
+        getSecRefs()
+        // Get main axon of original axon
+        // Prune axon if prune_ax >=1 for BLUE-BRAIN cells
+        meth1cells = new Vector() // identify which main axon identification algorithm to use
+        meth1cells.append(6,8,20,21,22,25) // method 1 cell ids
+        // get main axon (most relevant for PCs) and prune sections (non-main axon axonal sections)
+        objref main_ax_list 
+        // defines main_ax_list and min_sec_ind (public variable)    
+        if (!meth1cells.contains(cell_id)) { // use descending approach for most axons				
+            main_ax_list = get_main_ax2()
+            print "Got main axon (method 2)"
+        } else { // for cell meth1cells use ascending approach				
+            main_ax_list = get_main_ax()					
+            print "Got main axon (method 1)"	
+        }
+
+
+
+        cell_axonal_count = 0
+        forsec cell.axonal { cell_axonal_count+=1 } //debug //v
+        printf("length of cell.axonal: %g ", cell_axonal_count)
+}
+
+proc add_cell_myelin() {
+
+        // Myelinate axon after getting main axon, pruning, and scaling diameter					
+        if (myelinate_ax) {
+            myelinate_axon(cell.axonal)	
+            numComp = 0
+            print "finished myelinate_axon. proceeding to insert xtra to new sections."
+            forsec cell.axonal {
+                if (myelinate_ax){ // re-insert for myelin
+                    insert xtra
+                    insert extracellular
+                } 			
+                numComp+= nseg		 // save number of compartments	
+            }	
+           setpointers()	
+
+            printf("Inserted xtra and extracellular in cell.axonal compartments\n")														                     				        
+            //setpointers()
+            // get new main axon
+            if (!meth1cells.contains(cell_id)) { // use descending approach for most axons				
+                main_ax_list = get_main_ax2()
+                print "Got main axon (method 2)"
+            } else { // for meth1cells use ascending approach				
+                setpointers()	
+                main_ax_list = get_main_ax()		                		
+                print "Got main axon (method 1)"	
+            }	
+        } else {
+            // get numComp
+            numComp = 0
+            forsec cell.all {            			
+                numComp+= nseg		 // save number of compartments	
+            }            
+        }            
+        chdir(current_dir) // switch back to parallel_plate     
+
+        // Initilize potentials and waveform
+        // getes() // set Ve(x,y,z)
+        // setstim(DEL,DUR,AMP) // set waveform (current of E-field)
+//        color_plotmax()
+
+}
+
+// Get main axon using ascending approach - starting from lowest z point and going to AIS
+// objref main_ax
+// main_ax = get_main_ax()
+// also outputs min_sec_ind, access using secrefs.o(min_sec_ind)
+main_ax_rad = 500 // um main descending axon should be within this radius
+obfunc get_main_ax() { local i, miny, min_ind, xi, yi, zi, at_root localobj main_ax, current_secref		
+	main_ax = new SectionList() // main axon sections		
+	// Find lowest point of axon (on z axis)	
+	miny = 100 // initialize	
+	for i = 0,numSect-1 {				
+		if (yList.o(i).min < miny){
+			min_ind = yList.o(i).min_ind
+			xi = xList.o(i).x[min_ind]
+			yi = yList.o(i).x[min_ind]
+			rdist = sqrt((xi-secrefs.o(0).sec.x_xtra(0.5))^2+ (zi-secrefs.o(0).sec.y_xtra(0.5))^2 )
+			if (rdist < main_ax_rad){ // make sure compartment is not an oblique, descending collateral by ensuring it's within a horizontal radius
+				miny = yList.o(i).min
+				min_sec_ind = i // get index of section with lowest z-value, corresponds to terminal compartment
+			}			
+		} 
+	}
+	// ascend axon 
+	at_root = 0
+	current_secref = secrefs.o(min_sec_ind)		
+	while (!at_root) { // loop until reach root		
+		if (current_secref.has_parent){	
+			current_secref.sec main_ax.append() // add to SectionList
+			current_secref.parent {t
+				current_secref = new SectionRef() // make parent current secref 
+			}					
+		} else {
+			at_root = 1
+		}
+	}		
+	return main_ax
+}
+
+// Get main axon using descending approach - choose biggest of branches
+obfunc get_main_ax2() { local i, biggest_branch_diam, biggest_branch_ind, at_terminal localobj main_ax, current_secref, terminal_sec_str, current_sec_str		
+	main_ax = new SectionList() // main axon sections		
+	// descend axon 
+	at_terminal = 0    
+	cell.axon[0] current_secref = new SectionRef() // start at cell.axon[0] (initial segment/axon hillock)    
+	while (!at_terminal) { // loop until reach root
+		current_secref.sec main_ax.append() // add to SectionList        
+		if (current_secref.nchild > 0){                       
+			biggest_branch_diam = 0	// diameter of biggest child branch
+			biggest_branch_ind = 0 // index of biggest child branch among current_secref's children
+			for i = 0,current_secref.nchild - 1 {
+				if(current_secref.child[i].diam(0) > biggest_branch_diam) {
+					biggest_branch_diam = current_secref.child[i].diam(0)
+					biggest_branch_ind = i
+				}
+			}			
+			current_secref.child[biggest_branch_ind] { // make biggest child branch new current_sec, append to main-ax
+				current_secref = new SectionRef() // make child current secref 
+			}			            	
+		} else {            
+			at_terminal = 1
+			terminal_sec_str = new String()
+			current_secref.sec terminal_sec_str.s = secname()
+			current_sec_str = new String()
+			for i = 0, numSect - 1 {
+				secrefs.o(i).sec current_sec_str.s = secname()  
+				if (strcmp(current_sec_str.s,terminal_sec_str.s) == 0){ // compare each secname to terminal secname to get index - 0 means identical
+					min_sec_ind = i
+					//printf("Terminal section: %s, index: %g\n",terminal_sec_str.s,min_sec_ind)
+				}
+			}            
+		}        
+	}		
+	return main_ax
+}
