@@ -1,0 +1,13 @@
+you must have NEURON version 7.5 to run the codes.
+
+First of all, compile the mechanisms of the Aberra et al. 2019 models by running the command 'nrnivmodl' (in Linux) at the root folder of the mechanisms (AberraEtAl2018_edit/mechanisms), which contains .mod files.
+To run the 'nrnivmodl' command, you must have NEURON installed.
+
+One or more folders resulting from SimNIBS simulations must be placed inside the 'msh_inputs' folder.
+Inside the 'motor_cortex_indices' folder, you must create two text files with polygon indices indicating the polygons of the motor cortex region in both WM and GM meshes. It is recommended that you do this by importing the obj files of both GM and WM models into Blender, select the desired region of the motor cortex in each model by using the Ctrl+'+' command, and run the 'print_selected_faces' script in Blender's Python console.
+The number of simulated neurons is given by the number of polygons in the motor cortex region selected in the gray matter (GM) mesh. It is better that the WM motor cortex covers a wider area than the GM motor cortex, because that will be helpful during the calculations of the cortical thickness approximation and subsequent positioning of the neurons according to the thickness.
+
+The first file you should run is 'preprocessing.py', which reads the SimNIBS .msh file (or files) and the GM/WM motor cortex indices and generates the corresponding meshes to be used in the simulations.
+
+If you wish to run simulations for more than one coil orientation, then you must run 'generate_and_run_simnibs_files.py' with a .mat file (generated from SimNIBS) as a basis file, so that the other files with different coil orientations configurations can be generated.
+
