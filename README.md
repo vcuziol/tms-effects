@@ -1,6 +1,6 @@
 # TMS Effects model
 
-Code by V. V. Cuziol to accompany the Computational Model of the Effects of Transcranial Magnetic Stimulation on Cortical Networks *[paper](https://link.springer.com/chapter/10.1007/978-3-030-70601-2_338)* and *[master's thesis](https://www.teses.usp.br/teses/disponiveis/59/59143/tde-22062020-195016/publico/VitorCuziol_dissertacao_corrigida.pdf)*.
+Python code by V. V. Cuziol to accompany the Computational Model of the Effects of Transcranial Magnetic Stimulation on Cortical Networks *[paper](https://link.springer.com/chapter/10.1007/978-3-030-70601-2_338)* and *[master's thesis](https://www.teses.usp.br/teses/disponiveis/59/59143/tde-22062020-195016/publico/VitorCuziol_dissertacao_corrigida.pdf)*.
 
 This code was published only to be read/consulted and for research purposes; and the instructions below are only meant as a guide and are not guaranteed to work.
 
