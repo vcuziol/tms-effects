@@ -2,7 +2,7 @@
 
 Python code by V. V. Cuziol to accompany the Computational Model of the Effects of Transcranial Magnetic Stimulation on Cortical Networks *[paper](https://link.springer.com/chapter/10.1007/978-3-030-70601-2_338)* and *[master's thesis](https://www.teses.usp.br/teses/disponiveis/59/59143/tde-22062020-195016/publico/VitorCuziol_dissertacao_corrigida.pdf)*.
 
-This code was published only to be read/consulted and for research purposes; and the instructions below are only meant as a guide and are not guaranteed to work.
+For now, this code was published for research purposes and only to be read/consulted; and the instructions below are only meant as a general guide and are not guaranteed to work directly.
 
 ## Guide (unfinished; not tested)
 1) NEURON 7.5 is required. Compile the mechanisms of the Aberra et al. 2019 models by running the command 'nrnivmodl' (in Linux) at the root folder of the mechanisms (AberraEtAl2018_edit/mechanisms), which contains .mod files. To run the 'nrnivmodl' command, you must have NEURON installed.
