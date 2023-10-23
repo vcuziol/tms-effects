@@ -1,5 +1,5 @@
 # this file of the bmtk library was modified to allow custom
-# netcons (whose source section is not the soma, but the axon terminals):
+# netcons (i.e. source section is not the soma, but the axon terminals):
 # /home/master/Desktop/bmtk-0.0.8-py2.7.egg/bmtk/simulator/bionet/biocell.py
 
 # files
